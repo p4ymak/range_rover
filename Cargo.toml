@@ -2,8 +2,12 @@
 name = "range_rover"
 version = "0.1.0"
 edition = "2021"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+authors = ["Roman Chumak <p4ymak@yandex.ru>"]
+license = "MIT"
+repository = "https://github.com/p4ymak/range_rover"
+description = "Function to pack integers into ranges.."
+readme = "README.md"
+keywords = ["integers", "numbers", "ranges", "packing", "compression"]
 
 [dependencies]
 num = "0.4.0"
