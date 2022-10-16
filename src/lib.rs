@@ -33,7 +33,7 @@ pub fn range_rover<T: IntoIterator<Item = u32>>(input: T) -> Vec<RangeInclusive<
 #[cfg(test)]
 mod tests {
     use super::*;
-
+    use rand::Rng;
     #[test]
     fn zero_to_ten() {
         let input = vec![2, 0, 7, 10, 1, 3, 6, 4, 5, 9, 8];
@@ -51,5 +51,24 @@ mod tests {
         let input = (u32::MAX - 10)..=u32::MAX;
         let result = range_rover(input);
         assert_eq!(result, vec![(u32::MAX - 10)..=u32::MAX]);
+    }
+
+    #[test]
+    fn random() {
+        let mut rng = rand::thread_rng();
+        let mut random_numbers = [0_u32; 1024];
+        rng.fill(&mut random_numbers);
+
+        let mut input_sorted = random_numbers.to_vec();
+        input_sorted.sort();
+
+        let ranges = range_rover(random_numbers);
+        let mut output: Vec<u32> = ranges
+            .into_iter()
+            .flat_map(|r| r.collect::<Vec<u32>>())
+            .collect();
+        output.sort();
+
+        assert_eq!(input_sorted, output);
     }
 }
