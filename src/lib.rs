@@ -1,7 +1,7 @@
 use num::{Bounded, Integer, One, Saturating};
 use std::{collections::BTreeMap, ops::RangeInclusive};
 
-/// Takes a random sequence of values and produces a sorted vector of ranges.
+/// Takes a random sequence of integers and produces a sorted vector of ranges.
 /// # Examples
 /// ```
 /// use range_rover::range_rover;
