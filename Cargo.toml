@@ -8,6 +8,7 @@ repository = "https://github.com/p4ymak/range_rover"
 description = "Function to pack integers into ranges.."
 readme = "README.md"
 keywords = ["integers", "numbers", "ranges", "packing", "compression"]
+catefories = ["algorithms", "compression"]
 
 [dependencies]
 num = "0.4.0"
