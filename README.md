@@ -1,6 +1,6 @@
 ## Function to pack integers into ranges.
 
-Takes a custom sequence of integers and produces a sorted vector of ranges.
+Takes a custom sequence of non-repeating integers and produces a sorted vector of ranges.
 
 ### Example:
 ```rust
