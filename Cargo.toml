@@ -1,6 +1,6 @@
 [package]
 name = "range_rover"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2021"
 authors = ["Roman Chumak <p4ymak@yandex.ru>"]
 license = "MIT"
@@ -8,7 +8,7 @@ repository = "https://github.com/p4ymak/range_rover"
 description = "Function to pack integers into ranges.."
 readme = "README.md"
 keywords = ["integers", "numbers", "ranges", "packing", "compression"]
-catefories = ["algorithms", "compression"]
+categories = ["algorithms", "compression"]
 
 [dependencies]
 num = "0.4.0"
