@@ -1,5 +1,7 @@
 ## Function to pack integers into ranges.
 
+[![Latest version](https://img.shields.io/crates/v/range_rover.svg)](https://crates.io/crates/range_rover)
+
 Takes a custom sequence of integers and produces a sorted vector of ranges.
 
 ### Example:
