@@ -1,7 +1,7 @@
 use num::{Bounded, Integer, One, Saturating};
 use std::{mem, ops::RangeInclusive};
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct RangeTree<T> {
     range: RangeInclusive<T>,
     less: Option<Box<RangeTree<T>>>,
