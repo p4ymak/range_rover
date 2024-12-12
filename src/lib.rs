@@ -85,6 +85,28 @@ impl<T: Copy + Clone + Integer + Saturating + One + Bounded> RangeTree<T> {
             more.to_vec_req(vec);
         }
     }
+
+    pub fn missed_in_range(&self, range: RangeInclusive<T>) -> Vec<RangeInclusive<T>> {
+        let filled = self.to_vec();
+        let head = filled.first().and_then(|c| {
+            (c.start() > range.start())
+                .then_some(*range.start()..=c.start().saturating_sub(T::one()))
+        });
+        let tail = filled.last().and_then(|c| {
+            (c.end() < range.end()).then_some(c.end().saturating_add(T::one())..=*range.end())
+        });
+        let missed = head
+            .into_iter()
+            .chain(filled.windows(2).map(|w| {
+                w[0].end().saturating_add(T::one()).max(*range.start())
+                    ..=w[1].start().saturating_sub(T::one()).min(*range.end())
+            }))
+            .chain(tail)
+            .filter(|m| m.end() >= range.start() && m.start() <= range.end())
+            .collect::<Vec<RangeInclusive<T>>>();
+
+        missed
+    }
 }
 
 /// Takes a custom sequence of integers and produces a sorted vector of ranges.
@@ -97,7 +119,7 @@ impl<T: Copy + Clone + Integer + Saturating + One + Bounded> RangeTree<T> {
 /// ```
 ///
 /// ```
-/// use range_rover::range_rover;
+/// use range_rover::{range_rover, missed_in_range};
 /// let input = vec![-1, -2, 2, 0, 7, 10, -4, 1, 3, 6, -3, 10, 4, 9, 8, -2];
 /// let result = range_rover(input);
 /// assert_eq!(result, vec![-4..=4, 6..=10]);
@@ -117,6 +139,31 @@ where
         ranges = tree.to_vec();
     }
     ranges
+}
+
+/// Takes a custom sequence of integers and range, produces a sorted vector of excluded ranges in range.
+/// # Example
+/// ```
+/// use range_rover::missed_in_range;
+/// let input = vec![-1, -2, 2, 0, 7, 10, -4, 1, 3, 6, -3, 10, 4, 9, 8, -2];
+/// let missed = missed_in_range(input, -10..=20);
+/// assert_eq!(missed, vec![-10..=-5, 5..=5, 11..=20]);
+/// ```
+pub fn missed_in_range<I, T>(input: I, range: RangeInclusive<T>) -> Vec<RangeInclusive<T>>
+where
+    I: IntoIterator<Item = T>,
+    T: Copy + Clone + Integer + Saturating + One + Bounded,
+{
+    let mut missed = vec![];
+    let mut input = input.into_iter();
+    if let Some(first) = input.next() {
+        let mut tree = RangeTree::new(first);
+        for value in input {
+            tree.insert(value);
+        }
+        missed = tree.missed_in_range(range);
+    }
+    missed
 }
 
 #[cfg(test)]
@@ -147,5 +194,23 @@ mod tests {
         output.sort();
 
         assert_eq!(input_sorted, output);
+    }
+
+    #[test]
+    fn missed() {
+        use super::RangeTree;
+        let input = vec![2, 0, 7, 10, 1, 3, 0, 9, 8];
+        let tree = RangeTree::from_iter(input);
+        let missed = tree.missed_in_range(0..=10);
+        assert_eq!(missed, vec![4..=6]);
+        let missed = tree.missed_in_range(5..=10);
+        assert_eq!(missed, vec![5..=6]);
+        let missed = tree.missed_in_range(5..=15);
+        assert_eq!(missed, vec![5..=6, 11..=15]);
+
+        let input = vec![7, 3, 9, 8, 11, 14, 15];
+        let tree = RangeTree::from_iter(input);
+        let missed = tree.missed_in_range(1..=10);
+        assert_eq!(missed, vec![1..=2, 4..=6, 10..=10]);
     }
 }
